@@ -5,7 +5,14 @@ const { fetchUsers, fetchPosts, fetchComments } = require("../services/service")
 router.get("/users", async (req, res) => {
   try {
     const users = await fetchUsers();
-    res.json(users);
+
+    // Convert object to array of { id, name }
+    const userArray = Object.entries(users.users).map(([id, name]) => ({
+      id: Number(id),
+      name,
+    }));
+
+    res.json(userArray); // return array now
   } catch (err) {
     console.error("Route Error:", err.response?.data || err.message);
     res.status(500).json({ error: "Failed to fetch users" });
